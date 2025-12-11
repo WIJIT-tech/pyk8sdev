@@ -1,0 +1,31 @@
+---
+name: "Publish"
+
+on:  # yamllint disable rule:truthy
+  push:
+    tags:
+      # Publish on any tag starting with a `v`, e.g., v0.1.0
+      - v*
+
+jobs:
+  publish:
+    if: github.repository == 'WIJIT-tech/pyk8sdev'
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+      - name: Build
+        run: uv build
+      - name: Attest
+        run: uv tool run --with pypi-attestations pypi-attestations sign dist/*
+      - name: Publish
+        run: uv publish

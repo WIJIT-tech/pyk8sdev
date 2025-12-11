@@ -1,0 +1,192 @@
+[project]
+name = "pyk8sdev"
+dynamic = ["version"]
+description = "A development tool for creating Kubernetes clusters and syncing code changes to the cluster"
+readme = "README.md"
+license = "Apache-2.0"
+license-files = ["LICENSE"]
+requires-python = ">=3.13"
+authors = [
+    { name = "Martin Rowe", email = "marty@wijit.tech" }
+]
+keywords = [
+    "pytest",
+    "kubernetes",
+]
+classifiers = [
+    "Framework :: Pytest",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Testing",
+    "Topic :: System :: Clustering",
+    "Topic :: Utilities",
+]
+dependencies = [
+    "asyncinotify>=4.3.0",  # need RecursiveInotify
+    "httpx",
+    "pathspec",
+    "platformdirs",
+    "pydantic>=2",
+    "pytest",
+    "pytest-kubernetes",
+    "python-on-whales",
+    "pyyaml",
+]
+[project.optional-dependencies]
+tui = [
+    "rich",
+    "textual",
+]
+[dependency-groups]
+dev = [
+    "pyleak",
+    "pytest-asyncio",
+    "pytest-rerunfailures",
+    "textual-dev",
+]
+pre-commit = [
+    "deptry",
+    "import-linter",
+]
+
+[project.scripts]
+pyk8sdev = "pyk8sdev.__main__:_main"
+
+[project.urls]
+source = "https://github.com/WIJIT-tech/pyk8sdev"
+
+[build-system]
+requires = ["hatchling", "uv-dynamic-versioning"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+source = "uv-dynamic-versioning"
+
+[tool.uv-dynamic-versioning]
+fallback-version = "0.0.0"
+
+[project.entry-points.pytest11]
+pyk8sdev = "pyk8sdev.plugin"
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+log_cli = "true"
+addopts = [
+    "--import-mode=importlib",
+]
+testpaths = [
+    "tests",
+]
+reruns = 3
+reruns_delay = 10.0
+
+[tool.ruff]
+src = ["src"]
+line-length = 120
+fix = true
+show-fixes = true
+output-format = "full"
+target-version = "py314"
+
+[tool.ruff.lint]
+select = [
+    "A",     # builtins
+    "ANN",   # annotations
+    "ARG",   # unused arguments
+    "ASYNC", # async
+    "B",     # bugbear
+    "BLE",   # blind exception
+    "C4",    # comprehensions
+    "C90",   # complexity
+    "COM",   # commas
+    "D",     # pydoc
+    "DTZ",   # datetimez
+    "E",     # pycodestyle error
+    "ERA",   # eradicate
+    "EXE",   # executable
+    "F",     # pyflakes
+    "FA",    # future annotations
+    "FBT",   # boolean-trap
+    "FLY",   # flynt
+    "FURB",  # refurbish
+    "G",     # logging format
+    "I",     # isort
+    "ICN",   # import conventions
+    "INP",   # no pep420 (non-namespaced packages)
+    "ISC",   # implicit string concatenations
+    "LOG",   # logging
+    "N",     # pep8-naming
+    "PERF",  # perflint
+    "PGH",   # pygrep hooks
+    "PIE",   # pie
+    "PL",    # pylint
+    "PLC",   # pylint convention
+    "PLE",   # pylint error
+    "PLR",   # pylint refactor
+    "PLW",   # pylint warning
+    "PT",    # pytest style
+    "PTH",   # use pathlib
+    "PYI",   # pyi
+    "Q",     # quotes
+    "RET",   # return
+    "RSE",   # raise
+    "RUF",   # ruff-specific
+    "S",     # bandit
+    "SIM",   # simplify
+    "SLF",   # self
+    "SLOT",  # slots
+    "T10",   # trace
+    "T20",   # print
+    "TC",    # type checking
+    "TD",    # todos
+    "TID",   # tidy imports
+    "TRY",   # tryceratops
+    "UP",    # pyupgrade
+    "W",     # pycodestyle warning
+    "YTT",   # flake8-2020
+]
+ignore = [
+    "COM812",  # conflicts with formatter
+    "D203",    # prefer D211 style
+    "D213",    # prefer D212 style
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**.py" = [
+    "S101",    # assert ok in tests
+    "S105",    # hardcoded credentials not relevant for tests
+    "S106",    # hardcoded credentials not relevant for tests
+    "SLF001",  # allow access to private members for testing
+]
+
+[tool.ruff.lint.isort]
+force-single-line = true
+order-by-type = false
+
+[tool.ruff.lint.flake8-annotations]
+allow-star-arg-any = true
+mypy-init-return = true
+
+[tool.deptry]
+known_first_party = [
+    "pyk8sdev",
+]
+
+[tool.importlinter]
+root_package = "pyk8sdev"
+
+[[tool.importlinter.contracts]]
+name = "Enforce layering of modules"
+type = "layers"
+layers = [
+    "pyk8sdev.app",
+    "pyk8sdev.plugin",
+    "pyk8sdev.core",
+    "pyk8sdev.container | pyk8sdev.helm | pyk8sdev.k8s | pyk8sdev.watcher",
+    "pyk8sdev.config",
+    "pyk8sdev.exceptions",
+]
+
+[tool.coverage.run]
+branch = true
+patch = ["subprocess"]
+parallel = true

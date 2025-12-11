@@ -1,0 +1,15 @@
+ListView {
+    width: 100%;
+    height: auto;
+    padding: 1 1;
+}
+Label {
+    padding: 0 1;
+}
+Label.meta {
+    text-style: italic;
+}
+Label.heading {
+    width: 100%;
+    text-style: bold;
+}
