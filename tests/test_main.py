@@ -6,7 +6,7 @@ from subprocess import run
 
 def test_config_file_not_specified() -> None:
     """Test we get an error if the config file isn't specified."""
-    rc = run(  # noqa: S603 all trusted input
+    rc = run(
         [sys.executable, "-m", "pyk8sdev"],
         check=False,
         capture_output=True,
@@ -17,7 +17,7 @@ def test_config_file_not_specified() -> None:
 
 def test_config_file_does_not_exist() -> None:
     """Test we get an error if the config file doesn't exist."""
-    rc = run(  # noqa: S603 all trusted input
+    rc = run(
         [sys.executable, "-m", "pyk8sdev", "-c", "/test/does/not/exist.yaml"],
         check=False,
         capture_output=True,
