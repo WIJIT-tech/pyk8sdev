@@ -37,7 +37,7 @@ class CacheProvider(BaseModel):
     description: str
     repository: str
     url_override: str | None = None
-    registry_image_version: str = "2"
+    registry_image_version: str = "3"
 
     @property
     def url(self) -> str:

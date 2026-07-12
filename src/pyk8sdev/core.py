@@ -116,7 +116,7 @@ class CachedK8sCluster:
             else:
                 self._registries.append(
                     self._dc.container.run(
-                        image="registry:2",
+                        image="registry:3",
                         name=f"{self.config.cluster_name}-local-registry",
                         detach=True,
                         publish=[

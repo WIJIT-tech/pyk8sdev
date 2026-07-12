@@ -46,9 +46,9 @@ def ensure_container(
         while True:
             req = httpx.get(
                 f"http://localhost:5000/v2/{name}/manifests/{t.split(':')[-1]}",
-                headers={"Accept": "application/vnd.docker.distribution.manifest.v2+json"},
+                headers={"Accept": "application/vnd.oci.image.manifest.v1+json"},
             )
-            if req.status_code == 200 and req.json()["config"]["digest"] == image.id:  # noqa: PLR2004 standard HTTP code
+            if req.status_code == 200 and req.headers["Docker-Content-Digest"] == image.id:  # noqa: PLR2004 standard HTTP code
                 break
             docker_client.push(t, quiet=True)
     return image

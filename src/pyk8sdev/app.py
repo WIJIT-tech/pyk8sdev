@@ -6,7 +6,6 @@ from typing import Any
 from typing import TYPE_CHECKING
 
 from rich.logging import RichHandler
-from textual import events  # noqa: TC002
 from textual.app import App
 from textual.app import ComposeResult
 from textual.app import ReturnType
@@ -28,6 +27,7 @@ from pyk8sdev.core import ClusterEvent
 
 if TYPE_CHECKING:
     from rich.console import RenderableType
+    from textual import events
     from textual.widget import Widget
 
     from pyk8sdev.config import ConfigFile

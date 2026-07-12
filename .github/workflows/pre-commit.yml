@@ -20,7 +20,7 @@ jobs:
     permissions:
       contents: read  # Required to check the repo out (https://github.com/actions/checkout?tab=readme-ov-file#recommended-permissions)
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
         with:
           persist-credentials: false
       - uses: astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78  # v7
@@ -29,4 +29,4 @@ jobs:
             .pre-commit-config.yaml
             pyproject.toml
       - run: uv sync --group pre-commit
-      - uses: tox-dev/action-pre-commit-uv@270ddcea3d0ff0ef1527f49d12590954f31b4b3f  # v1
+      - uses: tox-dev/action-pre-commit-uv@270ddcea3d0ff0ef1527f49d12590954f31b4b3f  # v1.0.2
