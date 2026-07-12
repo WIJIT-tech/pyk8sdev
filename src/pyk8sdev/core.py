@@ -199,7 +199,12 @@ class CachedK8sCluster:
                 continue
             for net_node in network.containers.values():
                 node = self._dc.container.inspect(net_node.name)
-                if not node.name.startswith(self.config.cluster_name):
+                # Skip non-cluster containers and all registry containers
+                if (
+                    not node.name.startswith(self.config.cluster_name)
+                    or node.name.startswith(f"{self.config.cluster_name}-proxy-")
+                    or node.name.startswith(f"{self.config.cluster_name}-local-")
+                ):
                     continue
                 # Local registry
                 self._dc.execute(container=node, command=["mkdir", "-p", "/etc/containerd/certs.d/localhost:5000"])
@@ -238,7 +243,7 @@ class CachedK8sCluster:
                 if (
                     proxy.name.startswith(f"{self.config.cluster_name}-proxy-")
                     or proxy.name == f"{self.config.cluster_name}-local-registry"
-                ):
+                ) and proxy not in proxy.network_settings.networks:
                     self._dc.network.connect(network, proxy)
 
     def setup_resource(self, resource: HelmChart | Manifest | Command | dict) -> None:  # noqa: C901

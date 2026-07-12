@@ -53,7 +53,7 @@ def helm_upgrade(chart: HelmChart, kubeconfig: Path) -> None:
         extra_args.extend(["--values", str(chart.values_file)])
     if chart.values_override:
         extra_args.extend(["--values", "-"])
-    subprocess.run(  # noqa: S603 untrusted input restricted to loaded config
+    rc = subprocess.run(  # noqa: S603 untrusted input restricted to loaded config
         [
             which("helm"),
             "upgrade",
@@ -69,12 +69,17 @@ def helm_upgrade(chart: HelmChart, kubeconfig: Path) -> None:
             str(kubeconfig),
             *extra_args,
         ],
-        check=True,
+        check=False,
         # Only make stdin a pipe if we have input to feed it
         input=chart.values_override or None,
         capture_output=True,
         text=True,
     )
+    if rc.returncode:
+        logger.error(
+            "helm upgrade failed",
+            extra={"stderr": rc.stderr, "stdout": rc.stdout, "return_code": rc.returncode},
+        )
 
 
 def ensure_helm_released(chart: HelmChart, kubeconfig: Path) -> None:

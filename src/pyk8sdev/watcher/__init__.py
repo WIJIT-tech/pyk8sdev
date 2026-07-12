@@ -149,7 +149,8 @@ class Watcher:
         self._is_running.clear()
         self.watched = []
         for watch in self._inotify.watches:
-            self._inotify.rm_watch(watch)
+            with contextlib.suppress(OSError):
+                self._inotify.rm_watch(watch)
         self.executor.shutdown()
 
     def add_watch(
